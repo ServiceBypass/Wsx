@@ -1,0 +1,16 @@
+name: Folix Live Stream
+
+on:
+  workflow_dispatch: # Sadece butona basınca çalışır
+
+jobs:
+  stream:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: FFmpeg Kurulumu
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: Yayını Başlat
+        run: |
+          ffmpeg -re -f lavfi -i color=c=black:s=1280x720:r=30 -f lavfi -i anullsrc=channel_layout=stereo:sample_rate=44100 -vf "drawtext=text='Folix':fontcolor=white:fontsize=120:x=(w-text_w)/2:y=(h-text_h)/2" -c:v libx264 -preset veryfast -maxrate 1500k -bufsize 3000k -pix_fmt yuv420p -g 60 -c:a aac -b:a 128k -f flv "rtmp://rtmp2.asset.aparat.com:443/event/ebecfdcc04f08b4deda3dccc6a89bd97d?s=be05ee28e90dcf2b"
